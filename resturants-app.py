@@ -2,84 +2,98 @@ import streamlit as st
 import pandas as pd
 import pydeck as pdk
 
-st.set_page_config(page_title="Chiang Mai: Elite Collection", page_icon="🍲", layout="wide")
+st.set_page_config(page_title="Chiang Mai: 5+5 Elite List", page_icon="🍲", layout="wide")
 
 # --- DATASET ---
 data = [
+    # RESTAURANTS (6 items for testing pagination)
     {"Name": "L'éléphant", "Price": "฿฿฿", "Rating": 4.7, "Reviews": 450, "Type": "Restaurant", "Lat": 18.7938, "Lon": 98.9725, "Note": "Fine Dining French Art-Plate", "Color": [46, 125, 50, 200]},
-    {"Name": "Anchan Vegetarian", "Price": "฿฿", "Rating": 4.5, "Reviews": 850, "Type": "Restaurant", "Lat": 18.7966, "Lon": 98.9656, "Note": "Legendary Butterfly Pea Thai Food", "Color": [46, 125, 50, 200]},
-    {"Name": "Garden to Table", "Price": "฿฿", "Rating": 4.9, "Reviews": 350, "Type": "Restaurant", "Lat": 18.7865, "Lon": 98.9904, "Note": "Farm-to-table organic experience", "Color": [46, 125, 50, 200]},
-    {"Name": "Baan Landai Fine Thai", "Price": "฿฿", "Rating": 4.7, "Reviews": 1800, "Type": "Restaurant", "Lat": 18.7915, "Lon": 98.9892, "Note": "Michelin-recognized Royal Thai", "Color": [46, 125, 50, 200]},
-    {"Name": "Thai Food Good Taste", "Price": "฿", "Rating": 4.9, "Reviews": 650, "Type": "Restaurant", "Lat": 18.7883, "Lon": 98.9868, "Note": "Best value high-rating Thai", "Color": [46, 125, 50, 200]},
-    {"Name": "Ristr8to Original", "Price": "฿฿", "Rating": 4.6, "Reviews": 4200, "Type": "Cafe", "Lat": 18.7991, "Lon": 98.9672, "Note": "World Latte Art Champion", "Color": [121, 85, 72, 200]},
-    {"Name": "Gallery Drip Coffee", "Price": "฿฿", "Rating": 4.8, "Reviews": 1100, "Type": "Cafe", "Lat": 18.7902, "Lon": 98.9867, "Note": "Artistic pour-over specialty", "Color": [121, 85, 72, 200]},
-    {"Name": "Sweet Home Coffee", "Price": "฿", "Rating": 5.0, "Reviews": 210, "Type": "Cafe", "Lat": 18.7830, "Lon": 98.9822, "Note": "Perfect 5-star cozy gem", "Color": [121, 85, 72, 200]},
-    {"Name": "The Baristro Roaster", "Price": "฿฿", "Rating": 4.8, "Reviews": 950, "Type": "Cafe", "Lat": 18.8171, "Lon": 98.9993, "Note": "Industrial riverside roastery", "Color": [121, 85, 72, 200]},
-    {"Name": "Akha Ama Phrasingh", "Price": "฿", "Rating": 4.6, "Reviews": 2800, "Type": "Cafe", "Lat": 18.7884, "Lon": 98.9832, "Note": "Famous sustainable local beans", "Color": [121, 85, 72, 200]},
-    {"Name": "Khao Soi Maesai", "Price": "฿", "Rating": 4.6, "Reviews": 3200, "Type": "Restaurant", "Lat": 18.8001, "Lon": 98.9814, "Note": "The gold standard for Khao Soi", "Color": [46, 125, 50, 200]}
+    {"Name": "Anchan Vegetarian", "Price": "฿฿", "Rating": 4.5, "Reviews": 850, "Type": "Restaurant", "Lat": 18.7966, "Lon": 98.9656, "Note": "Legendary Butterfly Pea Thai", "Color": [46, 125, 50, 200]},
+    {"Name": "Garden to Table", "Price": "฿฿", "Rating": 4.9, "Reviews": 350, "Type": "Restaurant", "Lat": 18.7865, "Lon": 98.9904, "Note": "Farm-to-table organic", "Color": [46, 125, 50, 200]},
+    {"Name": "Baan Landai Fine Thai", "Price": "฿฿", "Rating": 4.7, "Reviews": 1800, "Type": "Restaurant", "Lat": 18.7915, "Lon": 98.9892, "Note": "Michelin Royal Thai", "Color": [46, 125, 50, 200]},
+    {"Name": "Thai Food Good Taste", "Price": "฿", "Rating": 4.9, "Reviews": 650, "Type": "Restaurant", "Lat": 18.7883, "Lon": 98.9868, "Note": "Superb Local Value", "Color": [46, 125, 50, 200]},
+    {"Name": "Khao Soi Maesai", "Price": "฿", "Rating": 4.6, "Reviews": 3200, "Type": "Restaurant", "Lat": 18.8001, "Lon": 98.9814, "Note": "Gold Standard Khao Soi", "Color": [46, 125, 50, 200]},
+    
+    # CAFES (6 items for testing pagination)
+    {"Name": "Ristr8to Original", "Price": "฿฿", "Rating": 4.6, "Reviews": 4200, "Type": "Cafe", "Lat": 18.7991, "Lon": 98.9672, "Note": "World Latte Art Champ", "Color": [121, 85, 72, 200]},
+    {"Name": "Gallery Drip Coffee", "Price": "฿฿", "Rating": 4.8, "Reviews": 1100, "Type": "Cafe", "Lat": 18.7902, "Lon": 98.9867, "Note": "Artistic pour-over", "Color": [121, 85, 72, 200]},
+    {"Name": "Sweet Home Coffee", "Price": "฿", "Rating": 5.0, "Reviews": 210, "Type": "Cafe", "Lat": 18.7830, "Lon": 98.9822, "Note": "Perfect 5-star gem", "Color": [121, 85, 72, 200]},
+    {"Name": "The Baristro Roaster", "Price": "฿฿", "Rating": 4.8, "Reviews": 950, "Type": "Cafe", "Lat": 18.8171, "Lon": 98.9993, "Note": "Modern roastery", "Color": [121, 85, 72, 200]},
+    {"Name": "Akha Ama Phrasingh", "Price": "฿", "Rating": 4.6, "Reviews": 2800, "Type": "Cafe", "Lat": 18.7884, "Lon": 98.9832, "Note": "Legendary Local Beans", "Color": [121, 85, 72, 200]},
+    {"Name": "Graph Ground", "Price": "฿฿", "Rating": 4.7, "Reviews": 1200, "Type": "Cafe", "Lat": 18.7984, "Lon": 98.9712, "Note": "Industrial Specialty Coffee", "Color": [121, 85, 72, 200]}
 ]
 
 df = pd.DataFrame(data)
 
-# --- FILTERS ---
-st.sidebar.header("Global Filters")
-price_filter = st.sidebar.multiselect("Price Range", ["฿", "฿฿", "฿฿฿"], default=["฿", "฿฿", "฿฿฿"])
-type_filter = st.sidebar.multiselect("Type", ["Restaurant", "Cafe"], default=["Restaurant", "Cafe"])
+# --- SIDEBAR FILTERS ---
+st.sidebar.header("Price Filter")
+price_filter = st.sidebar.multiselect("Select Price", ["฿", "฿฿", "฿฿฿"], default=["฿", "฿฿", "฿฿฿"])
 
-filtered_df = df[(df["Price"].isin(price_filter)) & (df["Type"].isin(type_filter))]
+# Filter original DF
+filtered_df = df[df["Price"].isin(price_filter)]
 
-# --- PAGINATION LOGIC ---
+# Split into two groups
+res_df = filtered_df[filtered_df["Type"] == "Restaurant"]
+caf_df = filtered_df[filtered_df["Type"] == "Cafe"]
+
+# --- PAGINATION CALCULATIONS ---
 items_per_page = 5
-total_pages = (len(filtered_df) // items_per_page) + (1 if len(filtered_df) % items_per_page > 0 else 0)
+max_res_pages = (len(res_df) - 1) // items_per_page + 1
+max_caf_pages = (len(caf_df) - 1) // items_per_page + 1
+total_pages = max(max_res_pages, max_caf_pages)
 
 if 'page' not in st.session_state:
     st.session_state.page = 1
 
-def next_page():
-    if st.session_state.page < total_pages:
-        st.session_state.page += 1
+# --- UI HEADER ---
+st.title("🍲 Chiang Mai: The 5+5 Elite Guide")
+st.markdown(f"Displaying up to **5 Restaurants** and **5 Cafes** per page.")
 
-def prev_page():
-    if st.session_state.page > 1:
-        st.session_state.page -= 1
-
-# --- UI ---
-st.title("🍲 Chiang Mai: The Elite 4.5+ List")
-
-# Map (Always shows all filtered results)
+# Map
 st.pydeck_chart(pdk.Deck(
     initial_view_state=pdk.ViewState(latitude=18.79, longitude=98.98, zoom=13),
     layers=[pdk.Layer("ScatterplotLayer", filtered_df, get_position='[Lon, Lat]', get_color='Color', get_radius=120, pickable=True)],
     tooltip={"text": "{Name}\n{Rating}★ | {Price}"}
 ))
 
-# Pagination Controls
+# Navigation
 st.divider()
-col1, col2, col3 = st.columns([1, 2, 1])
-with col1:
-    st.button("⬅️ Previous", on_click=prev_page, disabled=(st.session_state.page == 1))
-with col2:
-    st.write(f"**Page {st.session_state.page} of {total_pages}** (Showing {len(filtered_df)} total)")
-with col3:
-    st.button("Next ➡️", on_click=next_page, disabled=(st.session_state.page == total_pages))
+c1, c2, c3 = st.columns([1, 2, 1])
+with c1:
+    if st.button("⬅️ Previous") and st.session_state.page > 1:
+        st.session_state.page -= 1
+with c2:
+    st.write(f"### Page {st.session_state.page} of {total_pages}")
+with c3:
+    if st.button("Next ➡️") and st.session_state.page < total_pages:
+        st.session_state.page += 1
 
-# Slicing the dataframe for current page
-start_idx = (st.session_state.page - 1) * items_per_page
-end_idx = start_idx + items_per_page
-page_df = filtered_df.iloc[start_idx:end_idx]
+# Slice Data
+start = (st.session_state.page - 1) * items_per_page
+end = start + items_per_page
 
-# --- THE DEEP DIVE SECTION ---
-st.subheader("🔍 Deep Dive: Current Page Details")
-for _, row in page_df.iterrows():
-    with st.expander(f"{row['Name']} — {row['Rating']}★ ({row['Price']})"):
-        c1, c2 = st.columns([1, 2])
-        with c1:
-            st.metric("Reviews", f"{row['Reviews']:,}+")
-            st.write(f"**Type:** {row['Type']}")
-        with c2:
-            st.write(f"**Why visit:** {row['Note']}")
-            st.markdown(f"[📍 Open in Google Maps](https://www.google.com/maps/search/?api=1&query={row['Lat']},{row['Lon']})")
+current_res = res_df.iloc[start:end]
+current_caf = caf_df.iloc[start:end]
 
-# Simplified Table for current page
-st.subheader("📋 Quick List (Page View)")
-st.table(page_df[["Name", "Type", "Price", "Rating"]])
+# --- DEEP DIVE SECTION (Side-by-Side) ---
+st.subheader("🔍 Deep Dive: Local Excellence")
+col_res, col_caf = st.columns(2)
+
+with col_res:
+    st.markdown("### 🟢 Top Restaurants")
+    for _, row in current_res.iterrows():
+        with st.expander(f"{row['Name']} ({row['Price']})"):
+            st.write(f"**Rating:** {row['Rating']}★ | **Reviews:** {row['Reviews']}")
+            st.info(row['Note'])
+
+with col_caf:
+    st.markdown("### 🟤 Top Cafes")
+    for _, row in current_caf.iterrows():
+        with st.expander(f"{row['Name']} ({row['Price']})"):
+            st.write(f"**Rating:** {row['Rating']}★ | **Reviews:** {row['Reviews']}")
+            st.info(row['Note'])
+
+# --- SUMMARY TABLE ---
+st.subheader("📋 Page Summary")
+combined_page = pd.concat([current_res, current_caf])
+st.table(combined_page[["Name", "Type", "Price", "Rating"]])
